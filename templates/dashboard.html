@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}대시보드 - Gmail Analytics{% endblock %}
+
+{% block content %}
+<div class="container dashboard-container">
+    <div class="dashboard-header">
+        <h1>이메일 통계 대시보드</h1>
+        <p>Gmail 계정: <strong>{{ user.email }}</strong></p>
+    </div>
+
+    <div class="control-panel">
+        <div class="control-group">
+            <label for="maxEmails">분석할 이메일 개수:</label>
+            <select id="maxEmails">
+                <option value="50">50</option>
+                <option value="100" selected>100</option>
+                <option value="200">200</option>
+                <option value="500">500</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="emailQuery">검색 쿼리 (선택사항):</label>
+            <input type="text" id="emailQuery" placeholder="예: is:unread, from:example@gmail.com">
+        </div>
+
+        <button id="analyzeBtn" class="btn btn-primary">분석 시작</button>
+        <button id="viewLabelsBtn" class="btn btn-secondary">라벨 목록 보기</button>
+    </div>
+
+    <div id="loading" class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+        <p>이메일을 분석하는 중입니다... 잠시만 기다려주세요.</p>
+    </div>
+
+    <div id="error" class="error-message" style="display: none;"></div>
+
+    <div id="results" style="display: none;">
+        <!-- 상태 요약 -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon">📧</div>
+                <div class="stat-info">
+                    <h3 id="totalEmails">0</h3>
+                    <p>총 이메일</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📥</div>
+                <div class="stat-info">
+                    <h3 id="inboxEmails">0</h3>
+                    <p>받은편지함</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">✉️</div>
+                <div class="stat-info">
+                    <h3 id="unreadEmails">0</h3>
+                    <p>읽지 않음</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-info">
+                    <h3 id="importantEmails">0</h3>
+                    <p>중요</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🌟</div>
+                <div class="stat-info">
+                    <h3 id="starredEmails">0</h3>
+                    <p>별표</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 라벨 통계 -->
+        <div class="section">
+            <h2>라벨별 통계</h2>
+            <div class="table-container">
+                <table class="stats-table" id="labelStatsTable">
+                    <thead>
+                        <tr>
+                            <th>라벨</th>
+                            <th>총 이메일수</th>
+                            <th>읽지않음</th>
+                            <th>중요</th>
+                            <th>별표</th>
+                            <th>읽음 비율</th>
+                        </tr>
+                    </thead>
+                    <tbody id="labelStatsBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 상위 라벨 차트 -->
+        <div class="section">
+            <h2>상위 10개 라벨</h2>
+            <div class="chart-container">
+                <canvas id="topLabelsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 도메인 통계 -->
+        <div class="section">
+            <h2>발신자 도메인별 통계 (상위 20개)</h2>
+            <div class="table-container">
+                <table class="stats-table" id="domainStatsTable">
+                    <thead>
+                        <tr>
+                            <th>도메인</th>
+                            <th>이메일수</th>
+                            <th>읽지않음</th>
+                        </tr>
+                    </thead>
+                    <tbody id="domainStatsBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 읽음/읽지않음 비율 차트 -->
+        <div class="section">
+            <h2>읽음 상태 비율</h2>
+            <div class="chart-container chart-small">
+                <canvas id="readStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- 라벨 목록 모달 -->
+    <div id="labelsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Gmail 라벨 목록</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="labelsList"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

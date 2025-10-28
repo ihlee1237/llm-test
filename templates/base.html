@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gmail 이메일 분류 및 통계{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>Gmail Analytics</h1>
+            </div>
+            <div class="nav-menu">
+                {% if user %}
+                    <div class="user-info">
+                        {% if user.picture %}
+                            <img src="{{ user.picture }}" alt="{{ user.name }}" class="user-avatar">
+                        {% endif %}
+                        <span class="user-name">{{ user.name }}</span>
+                    </div>
+                    <a href="{{ url_for('dashboard') }}" class="nav-link">대시보드</a>
+                    <a href="{{ url_for('logout') }}" class="nav-link btn-logout">로그아웃</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="nav-link btn-login">Google 로그인</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Gmail Analytics. Gmail API를 사용한 이메일 분류 및 통계 프로그램</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
