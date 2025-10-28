@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# 환경 변수
+.env
+
+# Google 인증
+*.json
+!example.json
+
+# 출력 파일
+output/
+*.png
+*.csv
+results/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
